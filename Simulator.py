@@ -30,13 +30,12 @@ THRUST = 12 # Newtons
 
 
 #initial state vector
-state_vector = {"ax" : 0 ,"vx" : 0,"px" : 0,"az" : 0 ,"vz" : 1,"pz" : 0 ,"alpha" : 0.0,"omega" : 0.5,"theta" : 0.0}
+state_vector = {"ax" : 0 ,"vx" : 0,"px" : 0,"az" : 0 ,"vz" : 1,"pz" : 0 ,"alpha" : 0.0,"omega" : 0.05,"theta" : 0.5}
 
 rocket_phys = phys.threeDofPhysics(state_vector,vehicle.mass,vehicle.mmoi)
 
 #Controller setup
-controller = pid.PID(0.07,0.0,0.01,0) #KP,KI,KD,setpoint
-controller = pid.PID(1,0.0,0.05,0)
+controller = pid.PID(0.45,0.2,0.1,0)
 
 controller.setLims(-10,10)#output limits
 #our TVC is also limited by SERVO_LIMIT but we might want to change the the two independently
@@ -59,7 +58,7 @@ if __name__ == "__main__":
 		#Saving data we want to plot
 		angles_ret.append(np.rad2deg(rocket_phys.state_vector['theta']))
 		hori_pos_ret.append(rocket_phys.state_vector["pz"])
-		vert_pos_ret.append(rocket_phys.state_vector["px"])
+		vert_pos_ret.append(rocket_phys.state_vector["px"]) 
 		graphs = [(time_ret,angles_ret),(time_ret,hori_pos_ret),(time_ret,vert_pos_ret)]
 
 		#Real-time plotting is slow right now -> need to look into blit for matplotlib
