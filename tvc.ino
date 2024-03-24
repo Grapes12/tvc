@@ -119,6 +119,6 @@ double getPID(double angle)
 
 double getServoOutput(double actuatorCom)
 {
-  //
+  // returns the servo output given a certain angle deflection by getPID()
   return;
 }
