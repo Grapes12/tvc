@@ -16,7 +16,7 @@ float GroundLevelPressure;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   while (!Serial)
     delay(10); 
@@ -107,6 +107,19 @@ void loop()
   }
 
   numLoop++;
-  
+
+
+  //milliseconds
   delay(100);
+}
+
+double getPID(double angle){
+  //IMPLEMENT PID.PY here with P = 0.5, I = 0.1, D = 0.5 and +/-15 degrees max and min
+
+  return ;
+}
+
+double getServoOutput(double actuatorCom){
+  //
+  return ;
 }
