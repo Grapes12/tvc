@@ -19,12 +19,13 @@ Servo myservo;  // create servo object to control a servo
 Servo myservo2;
 // twelve servo objects can be created on most boards
 
-int serv1 = 90;    // variable to store the servo position
-int serv2 = 90;
+
 
 double angleX = 0;
 double angleY = 0;
 double angleZ = 0;
+
+double dt = 0.1;
 
 typedef struct PID{
     double kp;
@@ -82,18 +83,23 @@ void setup() {
 
     Serial.println(F("initialization done."));
 
-    myservo.attach(4);  // attaches the servo on pin 9 to the servo object
-    myservo2.attach(5);
+    myservo.attach(5);  // attaches the servo on pin 9 to the servo object
+    myservo2.attach(4);
 
-
-    while (Serial.available() == 0) {
-    }
-
-     int menuChoice = Serial.parseInt();
-    delay(100);
+    myservo.write(35);
+    
+    delay(5000);
 }
 
+double serv1 = 35;    // variable to store the servo position
+double serv2 = 30;
+
 void loop() {
+/*
+    myservo.write(0);
+    delay(100);
+    */
+  
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
@@ -159,10 +165,8 @@ void loop() {
         delay(15);                       // waits 15ms for the servo to reach the position
     }
     */
-    
-    angleX = angleX + g.gyro.x * 0.05;
-    angleY = angleY + g.gyro.y * 0.05;
-    angleZ = angleZ + g.gyro.z * 0.05;
+    angleX = angleX + g.gyro.x * dt;
+    angleY = angleY + g.gyro.y * dt;
 
 
     Serial.print("X: ");
@@ -170,18 +174,17 @@ void loop() {
     Serial.print("Y: ");
     Serial.println(angleY);
 
-    myservo.write(getPID(&myPID, angleX, 0.05) + serv1);
-    myservo2.write(getPID(&myPID, angleY, 0.05) + serv2);
-
-    serv1 = getPID(&myPID, angleX, 0.05) + serv1;
-    serv2 = getPID(&myPID, angleY, 0.05) + serv2;
+    myservo.write(getPID(&myPID, angleX, dt) + serv1);
+    myservo2.write(getPID(&myPID, angleY, dt) + serv2);
 
 
-    Serial.println(getPID(&myPID, angleX, 0.05));
-    Serial.println(getPID(&myPID, angleY, 0.05));
+
+    Serial.println(getPID(&myPID, angleX, dt) + serv1);
+    Serial.println(getPID(&myPID, angleY, dt) + serv1);
     
     
-    delay(50);
+    delay(dt*1000);
+    
 }
 
 double getPID(PID *pid, double angle, double dt) {
@@ -200,7 +203,7 @@ double getPID(PID *pid, double angle, double dt) {
         output = pid->saturation_min;
     }
 
-    return output;
+    return output * 3;
 }
 
 double getServoOutput(double actuatorCom) {

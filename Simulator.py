@@ -23,7 +23,7 @@ graphics.graphsHandler(3,graphs_dict) #number of graphs and their labels
 rocket = graphics.createAgent('black')
 targe = graphics.createAgent('red')
 
-vehicle = rocketConfig.vehicleProperties(1,0.1,0.5,np.deg2rad(15),np.deg2rad(150))
+vehicle = rocketConfig.vehicleProperties(0.25,0.1,0.5,np.deg2rad(15),np.deg2rad(150))
 #mass(kg),mmoi(kg m^2),com2TVC(meters),servo_lim(rad),servo_rate_lim(rad/s)
 
 THRUST = 12 # Newtons
@@ -46,11 +46,34 @@ delta_t = 0.1
 tvc_input = 0
 
 
+def getThrust (time):
+    datafile = open("motor.txt","r")
+    lines = datafile.readlines()
+    coun = 0
+    time1 = 0
+    thrust1 = 0
+    time2 = 0
+    thrust2 = 0
+    while coun<len(lines) and time >= float(lines[coun].split(" ")[0]): 
+        coun+=1
+    if (coun == 0 or coun == len(lines)):
+        return 0
+    else :
+        time1 = float(lines[coun-1].split(" ")[0])
+        thrust1 = float(lines[coun-1].split(" ")[1].split("\n")[0])
+        time2 = float(lines[coun].split(" ")[0])
+        thrust2 = float(lines[coun].split(" ")[1].split("\n")[0])
+        if (time == time1):
+            return thrust1
+        else:
+            return (((thrust2-thrust1)/(time2-time1))*(time-time1)) + thrust1
+
+
 if __name__ == "__main__":
 	while(sim_time < time_lim):
 
 		#Physics
-		forces = rocket_phys.tvcPhysics(tvc_input,THRUST,vehicle,delta_t) # Compute Forces	from TVC	
+		forces = rocket_phys.tvcPhysics(tvc_input,getThrust(sim_time),vehicle,delta_t) # Compute Forces	from TVC	
 		rocket_phys.inputForces(forces,delta_t) # Apply Forces to body	
 		graphics.moveAgent(rocket,rocket_phys.state_vector["pz"],rocket_phys.state_vector["px"])# Update Graphics and Plots
 		graphics.rotateAgent(rocket,rocket_phys.state_vector["theta"])
