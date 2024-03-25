@@ -51,7 +51,12 @@ typedef struct PID{
     }
 };
 
-PID myPID(0.45,0.2,0.1, 30, -30, 0, 0.05);
+//0.45, 0.2, 0.1
+PID myPID(0.45,0.,0.1, 15, -15, 0, dt);
+
+double serv1mid = 37;
+double serv1 = 37;    // variable to store the servo position
+double serv2 = 30;
 
 void setup() {
     Serial.begin(115200);
@@ -86,13 +91,12 @@ void setup() {
     myservo.attach(5);  // attaches the servo on pin 9 to the servo object
     myservo2.attach(4);
 
-    myservo.write(35);
+    myservo.write(serv1mid);
     
     delay(5000);
 }
 
-double serv1 = 35;    // variable to store the servo position
-double serv2 = 30;
+
 
 void loop() {
 /*
@@ -165,8 +169,8 @@ void loop() {
         delay(15);                       // waits 15ms for the servo to reach the position
     }
     */
-    angleX = angleX + g.gyro.x * dt;
-    angleY = angleY + g.gyro.y * dt;
+    angleX = angleX + rad2deg(g.gyro.x) * dt;
+    angleY = angleY + rad2deg(g.gyro.y) * dt;
 
 
     Serial.print("X: ");
@@ -203,10 +207,16 @@ double getPID(PID *pid, double angle, double dt) {
         output = pid->saturation_min;
     }
 
-    return output * 3;
+    return output;
 }
 
 double getServoOutput(double actuatorCom) {
     // returns the servo output given a certain angle deflection by getPID()
     return;
+}
+
+double rad2deg(double radian)
+{
+    double pi = 3.14159;
+    return(radian * (180 / pi));
 }
