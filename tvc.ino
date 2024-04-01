@@ -40,7 +40,7 @@ typedef struct PID{
 PID myPID(0.45,0.,0.1, 0, dt);
 
 double servXmid = 40;  // middle from 0
-double servYmid = 22;
+double servYmid = 21;
 
 double servXlim = 20;
 double servYlim = 20;
@@ -123,7 +123,7 @@ void loop() {
         break; 
         case 3:
             dance();
-            delay(150);
+            //delay(150);
         break; 
         case 4:
             control();
@@ -131,7 +131,7 @@ void loop() {
     }
     
     
-    delay(dt*1000);
+    delay(dt*500);
 }
 
 //centers servos
@@ -166,6 +166,7 @@ void dance(){
         c = c * -1;
     }
     ha = ha * -1;
+    
 }
 
 void deflectServX(double d){
