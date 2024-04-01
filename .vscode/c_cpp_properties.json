@@ -18,11 +18,10 @@
             "includePath": [
                 "C:\\Users\\roger\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\cores\\arduino",
                 "C:\\Users\\roger\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\variants\\eightanaloginputs",
-                "C:\\Users\\roger\\Documents\\Arduino\\libraries\\Adafruit_BMP3XX_Library",
+                "C:\\Users\\roger\\Documents\\Arduino\\libraries\\Adafruit_MPU6050",
                 "C:\\Users\\roger\\Documents\\Arduino\\libraries\\Adafruit_BusIO",
                 "C:\\Users\\roger\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\libraries\\Wire\\src",
                 "C:\\Users\\roger\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\libraries\\SPI\\src",
-                "C:\\Users\\roger\\Documents\\Arduino\\libraries\\Adafruit_MPU6050",
                 "C:\\Users\\roger\\Documents\\Arduino\\libraries\\Adafruit_Unified_Sensor",
                 "C:\\Users\\roger\\Documents\\Arduino\\libraries\\SD-1.2.4\\src",
                 "C:\\Users\\roger\\Documents\\Arduino\\libraries\\Servo\\src",

@@ -1,29 +1,18 @@
-#include <Adafruit_BMP3XX.h>
 #include <Adafruit_MPU6050.h>
 #include <SD.h>
 #include <Servo.h>
 
-Adafruit_BMP3XX bmp;
+
 
 Adafruit_MPU6050 mpu;
 
-File myFile;
-
-int state = 0;
-int numLoop = 0;
-float GroundLevelPressure;
 
 
-
-Servo myservo;  // create servo object to control a servo
-Servo myservo2;
-// twelve servo objects can be created on most boards
-
-
+Servo servoX; 
+Servo servoY;
 
 double angleX = 0;
 double angleY = 0;
-double angleZ = 0;
 
 double dt = 0.1;
 
@@ -34,49 +23,41 @@ typedef struct PID{
     double sp;
     double error_last;
     double integral_error;
-    double saturation_max;
-    double saturation_min;
     double dt;
 
-    PID(double k_p, double k_i, double k_d, int max, int min, double target = 0, float time_step = 0.05) {
+    PID(double k_p, double k_i, double k_d, double target, float time_step) {
         kp = k_p;
         ki = k_i;
         kd = k_d;
         sp = target;
-        saturation_max = max;
-        saturation_min = min;
         dt = time_step;
         error_last = 0;
         integral_error = 0;
     }
 };
 
-//0.45, 0.2, 0.1
-PID myPID(0.45,0.,0.1, 15, -15, 0, dt);
 
-double serv1mid = 37;
-double serv1 = 37;    // variable to store the servo position
-double serv2 = 30;
+PID myPID(0.45,0.,0.1, 0, dt);
+
+double servXmid = 40;  // middle from 0
+double servYmid = 22;
+
+double servXlim = 20;
+double servYlim = 20;
+
+int b = 1;
+int c = -1;
+int ha = 1;
+
+int commandCon = 2;
 
 void setup() {
     Serial.begin(115200);
 
+    Serial.setTimeout(0);
+
     while (!Serial)
         delay(10);
-
-    if (!SD.begin(10)) {
-        Serial.println(F("initialization failed!"));
-    }
-    SD.remove(F("test.txt"));
-
-    if (!bmp.begin_I2C()) {
-        Serial.println(F("Could not find a valid BMP3 sensor, check wiring!"));
-    }
-
-    bmp.setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
-    bmp.setPressureOversampling(BMP3_OVERSAMPLING_4X);
-    bmp.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
-    bmp.setOutputDataRate(BMP3_ODR_50_HZ);
 
     if (!mpu.begin()) {
         Serial.println(F("Failed to find MPU6050 chip"));
@@ -86,109 +67,129 @@ void setup() {
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
 
-    Serial.println(F("initialization done."));
-
-    myservo.attach(5);  // attaches the servo on pin 9 to the servo object
-    myservo2.attach(4);
-
-    myservo.write(serv1mid);
     
-    delay(5000);
+
+    servoX.attach(5);  
+    servoY.attach(8);
+
+    center();
+
+    delay(500);
+
+    Serial.println(F("initialization done."));
 }
 
 
-
 void loop() {
-/*
-    myservo.write(0);
-    delay(100);
-    */
-  
+
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
-    if (!bmp.performReading()) {
-        Serial.println(F("Failed to perform reading"));
-    }
 
-    if (state == 0 & numLoop > 0) {
-        GroundLevelPressure = bmp.pressure / 100.0;
-        state++;
-    }
-
-    /*
-      WRITING TO SD CARD CODE
-      if (state > 0)
-      {
-        myFile = SD.open(F("test.txt"), FILE_WRITE);
-        if (myFile)
-        {
-          myFile.print(F("Time: "));
-          myFile.print(((numLoop - 1) * 100) / 1000);
-          myFile.print(F(" s Alt: "));
-          myFile.print(bmp.readAltitude(GroundLevelPressure));
-          // myFile.print(" m Ax: " + a.acceleration.x +  +  a.acceleration.y + " m/s^2 Az: " +  a.acceleration.z + " m/s^2");
-          myFile.print(F(" m Ax: "));
-          myFile.print(a.acceleration.x);
-          myFile.print(F(" m/s^2 Ay: "));
-          myFile.print(a.acceleration.y);
-          myFile.print(F(" m/s^2 Az: "));
-          myFile.print(a.acceleration.z);
-          myFile.println(F(" m/s^2"));
-          myFile.close();
-        }
-        else
-        {
-          Serial.println(F("error opening test.txt"));
-        }
-      }
-
-      numLoop++;
-     */
-
-    // integrate readings twice to get attitude
-
-    // call PID function twice (for pitch and yaw)
-    
-    // send output to servo
-
-    // milliseconds
-    /*
-    
-    for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-        // in steps of 1 degree
-        neg -= 1;
-        myservo.write(pos);              // tell servo to go to position in variable 'pos'
-        myservo2.write(pos);
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
-    for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-        neg += 1;
-        myservo.write(pos);              // tell servo to go to position in variable 'pos'
-        myservo2.write(pos);
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
-    */
     angleX = angleX + rad2deg(g.gyro.x) * dt;
     angleY = angleY + rad2deg(g.gyro.y) * dt;
 
-
+/*
     Serial.print("X: ");
-    Serial.println(angleX); 
+    Serial.print(angleX); 
+    Serial.print("  ");
     Serial.print("Y: ");
     Serial.println(angleY);
+ */  
+    switch(Serial.readString().toInt()){
+        case 1:
+            commandCon = 1;
+        break; 
+        case 2:
+            commandCon = 2;
+        break; 
+        case 3:
+            commandCon = 3;
+        break; 
+        case 4:
+            angleX = 0;
+            angleY = 0;
+            center();
+            commandCon = 4;
+        break; 
+    }
 
-    myservo.write(getPID(&myPID, angleX, dt) + serv1);
-    myservo2.write(getPID(&myPID, angleY, dt) + serv2);
-
-
-
-    Serial.println(getPID(&myPID, angleX, dt) + serv1);
-    Serial.println(getPID(&myPID, angleY, dt) + serv1);
+    switch(commandCon){
+        case 1:
+            zero();
+        break; 
+        case 2:
+            center();
+        break; 
+        case 3:
+            dance();
+            delay(150);
+        break; 
+        case 4:
+            control();
+        break; 
+    }
     
     
     delay(dt*1000);
+}
+
+//centers servos
+void center(){
+    servoX.write(servXmid);
+    servoY.write(servYmid);
+}
+
+//PID control based off IMU
+void control(){
+    deflectServX(getPID(&myPID, angleX, dt));
+    deflectServY(getPID(&myPID, angleY, dt));
+    //Serial.println(getPID(&myPID, angleX, dt) + servXmid);
+    //Serial.println(getPID(&myPID, angleY, dt) + servYmid);
+}
+
+//servos to 0 degrees
+void zero(){
+    servoX.write(0);
+    servoY.write(0);
+}
+
+//makes servos dance
+void dance(){
+    deflectServX(15 * b);
+    deflectServY(15 * c);
     
+    if(ha == 1){
+        b = b * -1;
+    }
+    else{
+        c = c * -1;
+    }
+    ha = ha * -1;
+}
+
+void deflectServX(double d){
+    if(d > servXlim){
+        servoX.write(servXmid + servXlim);
+    }
+    else if(d < -servXlim){
+        servoX.write(servXmid - servXlim);
+    }
+    else{
+        servoX.write(servXmid + d);
+    }
+}
+
+void deflectServY(double d){
+    if(d > servYlim){
+        servoY.write(servYmid + servYlim);
+    }
+    else if(d < -servYlim){
+        servoY.write(servYmid - servYlim);
+    }
+    else{
+        servoY.write(servYmid + d);
+    }
 }
 
 double getPID(PID *pid, double angle, double dt) {
@@ -199,16 +200,9 @@ double getPID(PID *pid, double angle, double dt) {
     double output = pid->kp * error + pid->ki * pid->integral_error + pid->kd * derivative_error;
     pid->error_last = error;
 
-    // max or min of zero means no max or min defined
-
-    if (pid->saturation_max != 0 && output > pid->saturation_max) {
-        output = pid->saturation_max;
-    } else if (pid->saturation_min != 0 && output < pid->saturation_min) {
-        output = pid->saturation_min;
-    }
-
     return output;
 }
+
 
 double getServoOutput(double actuatorCom) {
     // returns the servo output given a certain angle deflection by getPID()
