@@ -4,17 +4,17 @@
 
 
 
-Adafruit_MPU6050 mpu;
+Adafruit_MPU6050 mpu; //initialize IMU
 
-
-
+//declaring 2 servos for yaw and pitch angles, should change to a form of quaternion in the future
 Servo servoX; 
 Servo servoY;
 
+//initialize yaw and pitch read by imu
 double angleX = 0;
 double angleY = 0;
 
-double dt = 0.1;
+double dt = 0.1; //time step in seconds
 
 typedef struct PID{
     double kp;
@@ -39,8 +39,9 @@ typedef struct PID{
 
 PID myPID(0.45,0.,0.1, 0, dt);
 
-double servXmid = 40;  // middle from 0
-double servYmid = 21;
+//initialize deflection to center the tvc
+double servXmid = 40;  
+double servYmid = 21; 
 
 double servXlim = 20;
 double servYlim = 20;
@@ -49,7 +50,7 @@ int b = 1;
 int c = -1;
 int ha = 1;
 
-int commandCon = 2;
+int commandCon = 2; // command int 1 is zero, 2 is center, 3 is dance, 4 is pid control
 
 void setup() {
     Serial.begin(115200);
@@ -123,13 +124,12 @@ void loop() {
         break; 
         case 3:
             dance();
-            //delay(150);
+            delay(150);
         break; 
         case 4:
             control();
         break; 
     }
-    
     
     delay(dt*500);
 }
