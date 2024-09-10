@@ -23,7 +23,7 @@ graphics.graphsHandler(3,graphs_dict) #number of graphs and their labels
 rocket = graphics.createAgent('black')
 targe = graphics.createAgent('red')
 
-vehicle = rocketConfig.vehicleProperties(0.5,0.1,0.5,np.deg2rad(15),np.deg2rad(150))
+vehicle = rocketConfig.vehicleProperties(0.25,0.1,0.5,np.deg2rad(15),np.deg2rad(150))
 #mass(kg),mmoi(kg m^2),com2TVC(meters),servo_lim(rad),servo_rate_lim(rad/s)
 
 #THRUST = 12 # Newtons
@@ -48,7 +48,7 @@ tvc_input = 0
 
 
 def getThrust (time):
-    datafile = open("motor.txt","r")
+    datafile = open("PYTHON SIM(old)/motor.txt","r")
     lines = datafile.readlines()
     coun = 0
     time1 = 0
