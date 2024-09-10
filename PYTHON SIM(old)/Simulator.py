@@ -26,7 +26,7 @@ targe = graphics.createAgent('red')
 vehicle = rocketConfig.vehicleProperties(0.5,0.1,0.5,np.deg2rad(15),np.deg2rad(150))
 #mass(kg),mmoi(kg m^2),com2TVC(meters),servo_lim(rad),servo_rate_lim(rad/s)
 
-THRUST = 12 # Newtons
+#THRUST = 12 # Newtons
 
 
 #initial state vector
@@ -35,7 +35,8 @@ state_vector = {"ax" : 0 ,"vx" : 0,"px" : 0,"az" : 0 ,"vz" : 1,"pz" : 0 ,"alpha"
 rocket_phys = phys.threeDofPhysics(state_vector,vehicle.mass,vehicle.mmoi)
 
 #Controller setup
-controller = pid.PID(0.45,0.2,0.1,0)
+controller = pid.PID(0.5,0.05,0.1,0)
+#controller = pid.PID(.85,0.2,0.1,0)
 
 controller.setLims(-10,10)#output limits
 #our TVC is also limited by SERVO_LIMIT but we might want to change the the two independently
