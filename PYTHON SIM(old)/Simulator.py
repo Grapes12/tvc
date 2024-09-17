@@ -4,6 +4,7 @@ import PID as pid
 import Graphics as gh
 import Physics as phys
 import rocketConfig
+import pandas as pd
 #Units are SI units... m/s/radians/kg
 
 time_ret = []
@@ -31,6 +32,7 @@ vehicle = rocketConfig.vehicleProperties(0.25,0.1,0.5,np.deg2rad(15),np.deg2rad(
 
 #initial state vector
 state_vector = {"ax" : 0 ,"vx" : 0,"px" : 0,"az" : 0 ,"vz" : 1,"pz" : 0 ,"alpha" : 0.0,"omega" : 0.05,"theta" : 0.5}
+
 
 rocket_phys = phys.threeDofPhysics(state_vector,vehicle.mass,vehicle.mmoi)
 

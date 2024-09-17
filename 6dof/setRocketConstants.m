@@ -1,3 +1,4 @@
+clc;
 clear;
 
 
@@ -6,13 +7,18 @@ clear;
 x0 = [0; 0; 0; 0; 0; 0; 0; 0; 0]; %[x; y; z; vx; vy; vz; ax; ay; az]
 q0 = [1; 0; 0; 0];
 
-%rocketconfig   TEMP
-mass = 0.5; %kg
-mmoi = 0.1;
+%rocketconfig   
+wetmass = 0.3; %kg
+drymass = 0.25
 
 
 
+motor = table2array(readtable('motor.txt'));
 
+
+%motorcurve = interp1(motor(:, 1), motor(:, 2), 0:0.01:2.25)
+%plot(0:0.01:2.25, motorcurve)
+%motorcurve = interp1(motor(:, 1), motor(:, 2), 2.43)
 
 save("params.mat")
 
