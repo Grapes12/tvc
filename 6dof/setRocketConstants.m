@@ -9,12 +9,10 @@ q0 = [1; 0; 0; 0];
 
 %rocketconfig   
 wetmass = 0.3; %kg
-drymass = 0.25
-
-
+drymass = 0.25;
+currentmass = 0.3;
 
 motor = table2array(readtable('motor.txt'));
-
 
 %motorcurve = interp1(motor(:, 1), motor(:, 2), 0:0.01:2.25)
 %plot(0:0.01:2.25, motorcurve)
