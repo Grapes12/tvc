@@ -15,3 +15,11 @@ G = 6.6743 * 10 ^ (-11);
 
 
 save("params.mat");
+
+data = readmatrix('i55_thrust.csv');
+t_data = data(:,1); % Time values
+T_data = data(:,2); % Thrust values
+
+% Save variables to a .mat file
+save('thrust_data.mat', 't_data', 'T_data');
+disp('Thrust data saved to thrust_data.mat');
