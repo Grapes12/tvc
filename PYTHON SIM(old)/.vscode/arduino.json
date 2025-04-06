@@ -1,6 +1,0 @@
-{
-    "configuration": "cpu=atmega328",
-    "board": "arduino:avr:nano",
-    "sketch": "tvc.ino",
-    "port": "COM4"
-}

@@ -1,4 +1,4 @@
-data = readmatrix('i55_thrust.csv');  
+data = readmatrix('F10_thrust.csv');  
 t_data = data(:,1);  % Time values from CSV
 T_data = data(:,2);  % Thrust values from CSV
 
@@ -21,3 +21,5 @@ ylabel('Thrust (N)');
 title('Thrust Curve Using PCHIP Interpolation');
 legend('Location', 'Best');
 grid on;
+
+save('thrust_data1.mat', 't_data', 'T_data');
